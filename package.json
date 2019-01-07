@@ -5,6 +5,12 @@
   "main": "webpack.config.dev.js",
   "dependencies": {
     "@dattn/dnd-grid": "0.0.14",
+    "babel-loader": "^8.0.0-beta.6",
+    "bootstrap-vue": "^2.0.0-rc.11",
+    "css-loader": "^2.1.0",
+    "node-sass": "^4.11.0",
+    "sass-loader": "^7.1.0",
+    "style-loader": "^0.23.1",
     "vue": "^2.5.21",
     "vue-cli": "^2.9.6",
     "vue-draggable-resizable": "^1.7.5",
@@ -12,6 +18,10 @@
     "webpack": "^4.28.3"
   },
   "devDependencies": {
+    "@babel/core": "^7.2.2",
+    "@babel/preset-env": "^7.2.3",
+    "babel-core": "^6.26.3",
+    "babel-preset-env": "^1.7.0",
     "splitpanes": "^1.9.0",
     "webpack": "^4.28.3",
     "webpack-cli": "^3.2.0"

@@ -27,7 +27,23 @@
 
 <body class="homepage">
 
-
+<grid-layout
+            :layout.sync="layout"
+            :col-num="4"
+            :row-height="30"
+            :is-draggable="true"
+            :is-resizable="true"
+            :is-mirrored="false"
+            :vertical-compact="true"
+            :margin="[10, 10]"
+            :use-css-transforms="true"
+    >
+        <grid-item 
+                   :x="layout[0].x"
+                   :y="layout[0].y"
+                   :w="layout[0].w"
+                   :h="layout[0].h"
+                   :i="layout[0].i">
                    
         
   <header id="header">
@@ -61,7 +77,15 @@
   </header>
   <!--/header-->
   
- 
+  </grid-item>
+
+
+        <grid-item v-if="false"
+                   :x="layout[1].x"
+                   :y="layout[1].y"
+                   :w="layout[1].w"
+                   :h="layout[1].h"
+                   :i="layout[1].i">
 
   <div class="slider">
     <div class="container">
@@ -100,6 +124,14 @@
     </div>
   </div>
 
+ </grid-item>
+
+        <grid-item 
+                   :x="layout[2].x"
+                   :y="layout[2].y"
+                   :w="layout[2].w"
+                   :h="layout[2].h"
+                   :i="layout[2].i">
 
   <section id="feature">
     <div class="container">
@@ -171,7 +203,14 @@
     <!--/.container-->
   </section>
   <!--/#feature-->
+</grid-item>
 
+        <grid-item 
+                   :x="layout[3].x"
+                   :y="layout[3].y"
+                   :w="layout[3].w"
+                   :h="layout[3].h"
+                   :i="layout[3].i">
 
   <section id="recent-works">
     <div class="container">
@@ -290,7 +329,14 @@
     <!--/.container-->
   </section>
   <!--/#recent-works-->
+</grid-item>
 
+        <grid-item 
+                   :x="layout[4].x"
+                   :y="layout[4].y"
+                   :w="layout[4].w"
+                   :h="layout[4].h"
+                   :i="layout[4].i">
 
   <section id="middle">
     <div class="container">
@@ -429,7 +475,14 @@
   </section>
   <!--/#middle-->
   
- 
+  </grid-item>
+  
+          <grid-item 
+                   :x="layout[5].x"
+                   :y="layout[5].y"
+                   :w="layout[5].w"
+                   :h="layout[5].h"
+                   :i="layout[5].i">
 
   <section id="bottom">
     <div class="container wow fadeInDown" data-wow-duration="1000ms" data-wow-delay="600ms">
@@ -490,6 +543,14 @@
   </section>
   <!--/#bottom-->
   
+   </grid-item>
+
+          <grid-item 
+                   :x="layout[6].x"
+                   :y="layout[6].y"
+                   :w="layout[6].w"
+                   :h="layout[6].h"
+                   :i="layout[6].i">
 
   <div class="top-bar">
     <div class="container">
@@ -511,7 +572,14 @@
   </div>
   <!--/.top-bar-->
   
+  </grid-item>
 
+          <grid-item 
+                   :x="layout[7].x"
+                   :y="layout[7].y"
+                   :w="layout[7].w"
+                   :h="layout[7].h"
+                   :i="layout[7].i">
 
   <footer id="footer" class="midnight-blue">
     <div class="container">
@@ -540,11 +608,21 @@
     </div>
   </footer>
   
-
+  </grid-item>
+ 
+              <grid-item 
+                   :x="layout[8].x"
+                   :y="layout[8].y"
+                   :w="layout[8].w"
+                   :h="layout[8].h"
+                   :i="layout[8].i">
 <b-table responsive stacked="md"             
                             :small=true
                             :striped=true :items="items"></b-table>
+  </grid-item>
 
+
+    </grid-layout>
     
     
 <div class="SM MD" data-observe-resizes>
@@ -564,6 +642,19 @@
 
 <script>
 
+import VueGridLayout from 'vue-grid-layout';
+
+var testLayout = [
+        {"x":0,"y":0,"w":4,"h":3,"i":"0"},
+        {"x":1,"y":3,"w":4,"h":15,"i":"1"},
+        {"x":4,"y":18,"w":4,"h":13,"i":"2"},
+        {"x":6,"y":31,"w":4,"h":17,"i":"3"},
+        {"x":0,"y":48,"w":4,"h":9,"i":"4"},
+        {"x":0,"y":57,"w":4,"h":6,"i":"5"},
+        {"x":0,"y":66,"w":4,"h":2,"i":"6"},
+        {"x":0,"y":63,"w":2,"h":3,"i":"7"},
+        {"x":0,"y":72,"w":1,"h":6,"i":"8"},
+    ];
     
 const items = [
         {
@@ -609,7 +700,8 @@ export default {
               
 
     components: {
- 
+           GridLayout: VueGridLayout.GridLayout,
+           GridItem: VueGridLayout.GridItem        
     },     
     props: {
     },    
