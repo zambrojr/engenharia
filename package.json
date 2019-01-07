@@ -1,0 +1,35 @@
+{
+  "name": "zambrojr-engenharia",
+  "version": "1.0.0",
+  "description": "Thanks for downloading this theme!",
+  "main": "webpack.config.dev.js",
+  "dependencies": {
+    "@dattn/dnd-grid": "0.0.14",
+    "vue": "^2.5.21",
+    "vue-cli": "^2.9.6",
+    "vue-draggable-resizable": "^1.7.5",
+    "vue-loader": "^15.4.2",
+    "webpack": "^4.28.3"
+  },
+  "devDependencies": {
+    "splitpanes": "^1.9.0",
+    "webpack": "^4.28.3",
+    "webpack-cli": "^3.2.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack --progress --config build/webpack.config.dev.js",
+    "watch": "webpack --progress --watch --config build/webpack.config.dev.js",
+    "production": "webpack --no-progress --hide-modules --config=build/webpack.config.dev.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zambrojr/engenharia.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/zambrojr/engenharia/issues"
+  },
+  "homepage": "https://github.com/zambrojr/engenharia#readme"
+}
