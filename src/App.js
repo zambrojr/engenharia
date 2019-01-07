@@ -12,6 +12,7 @@ import App from './index.vue'
 //import VueMask from 'v-mask'
 //Vue.use(VueMask);
 
+
 import BootstrapVue from 'bootstrap-vue'
 Vue.use(BootstrapVue);
 
