@@ -75,9 +75,6 @@
   <!--==========================
     Hero Section
   ============================-->
-
-
- <div id="map" class="map"></div>
 <!--
     <b-row>
         <b-col class="text-center mb-5 rounded pointer md-1">  
@@ -88,12 +85,10 @@
         </b-col>
     </b-row>
 -->
-  <b-modal id="modal1" title="Bootstrap-Vue">
-    <p class="my-4">Hello from modal!</p>
-  </b-modal>
 
 
-<polygon points="200,10 250,190 160,210" style="fill:lime;stroke:purple;stroke-width:1;z-idex:9999 " />
+
+
 
 
   <!--==========================
@@ -104,11 +99,22 @@
     <div class="container">
       <div class="section-title text-center">
 
-        <h2>simple systeme fordiscount </h2>
-        <p class="separator">Integer cursus bibendum augue ac cursus .</p>
+        <h2>Lagoa dos Cisnes</h2>
+        <p class="separator">Lotes a partir de 360M²</p>
 
       </div>
     </div>
+
+<b-container>
+    <b-row>
+        <b-col class="text-center m-5 rounded pointer md-1">  
+        <b-card >
+            <div id="map" class="map"></div>
+        </b-card>
+        </b-col>
+    </b-row>            
+</b-container>
+
 
     <div class="container">
       <div class="row">
@@ -825,6 +831,11 @@
  </body>
 
 
+  <b-modal v-model="modalTerreno" size="lg" ok-only centered >
+      <b-table responsive stacked="md" :small=true :striped=true :items="items"></b-table>
+      <b-table responsive stacked="md" :small=true :striped=true :items="agendaVisita"></b-table>
+  </b-modal>
+
 
 </div>
 
@@ -832,60 +843,26 @@
 
 <script>
 
-
+import 'ol/ol.css';
     import Map from 'ol/Map.js';
       import View from 'ol/View.js';
       import {getCenter} from 'ol/extent.js';
       import ImageLayer from 'ol/layer/Image.js';
       import Projection from 'ol/proj/Projection.js';
       import Static from 'ol/source/ImageStatic.js';
+      
 
       import Draw from 'ol/interaction/Draw.js';
       import {Tile as TileLayer, Vector as VectorLayer} from 'ol/layer.js';
       import {OSM, Vector as VectorSource} from 'ol/source.js';
 
-            import {click, pointerMove, altKeyOnly} from 'ol/events/condition.js';
-             import Select from 'ol/interaction/Select.js';
+      import GeoJSON from 'ol/format/GeoJSON.js';
+      import Feature from 'ol/Feature.js';
+      import {click, pointerMove, altKeyOnly} from 'ol/events/condition.js';
+      import Select from 'ol/interaction/Select.js';
+      import {Fill, Stroke, Style, Text} from 'ol/style.js';
     
-const items = [
-        {
-          'heading 1': 'table cell',
-          'heading 2': 'table cell',
-          'heading 3': 'table cell',
-          'heading 4': 'table cell',
-          'heading 5': 'table cell',
-          'heading 6': 'table cell',
-          'heading 7': 'table cell',
-          'heading 8': 'table cell',
-          'heading 9': 'table cell',
-          'heading 10': 'table cell'
-        },
-        {
-          'heading 1': 'table cell',
-          'heading 2': 'table cell',
-          'heading 3': 'table cell',
-          'heading 4': 'table cell',
-          'heading 5': 'table cell',
-          'heading 6': 'table cell',
-          'heading 7': 'table cell',
-          'heading 8': 'table cell',
-          'heading 9': 'table cell',
-          'heading 10': 'table cell'
-        },
-        {
-          'heading 1': 'table cell',
-          'heading 2': 'table cell',
-          'heading 3': 'table cell',
-          'heading 4': 'table cell',
-          'heading 5': 'table cell',
-          'heading 6': 'table cell',
-          'heading 7': 'table cell',
-          'heading 8': 'table cell',
-          'heading 9': 'table cell',
-          'heading 10': 'table cell'
-        }
-      ] ;
-
+ 
 
 var stats = [
   { label: 'A', value: 100 },
@@ -905,7 +882,71 @@ export default {
     },    
     data() {
             return {
-                items: items
+
+                listaTerrenos: {
+                  "type":"FeatureCollection",
+                  "features":[
+                        {"type":"Feature","geometry":{"type":"Polygon","coordinates":[[[344.5,582],[347.5,390],[378.5,391],[371.5,584],[344.5,582]]]},"properties":null},
+                        {"type":"Feature","geometry":{"type":"Polygon","coordinates":[[[449.5,588],[451.5,396],[480.5,396],[477.5,592],[449.5,588]]]},"properties":null},
+                        {"type":"Feature","geometry":{"type":"Polygon","coordinates":[[[127.5,475],[128.5,511],[88.5,512],[80.5,470],[127.5,475]]]},"properties":null},
+                        {"type":"Feature","geometry":{"type":"Polygon","coordinates":[[[518.5,387],[525.5,193],[556.5,194],[550.5,391],[518.5,387]]]},"properties":null}
+                    ]
+                },
+                listaTerrenosVendidos: {
+                  "type":"FeatureCollection",
+                  "features":[
+                        {"type":"Feature","geometry":{"type":"Polygon","coordinates":[[[380.5,585],[382.5,392],[411.5,393],[406.5,587],[380.5,585]]]},"properties":null},
+                        {"type":"Feature","geometry":{"type":"Polygon","coordinates":[[[413.5,586],[414.5,393],[446.5,394],[442.5,589],[413.5,586]]]},"properties":null},
+                    ]
+                },                
+
+                items: [
+                            {
+                              'Responsavel': 'Andrews Everton',
+                              'Identificador': '00001/01',
+                              'Visitante': "Mauro Porto",
+                              'Inicio': '07/01/2018 14:03:00',
+                              'Fim': '07/01/2018 15:03:00',
+                            },
+                            {
+                              'Responsavel': 'Batman',
+                              'Identificador': '00002/01',
+                              'Visitante': "Mauro Porto",
+                              'Inicio': '07/01/2018 14:03:00',
+                              'Fim': '07/01/2018 15:03:00',
+                            },
+                            {
+                              'Responsavel': 'Andrews Everton',
+                              'Identificador': '00001/01',
+                              'Visitante': "Mauro Porto",
+                              'Inicio': '07/01/2018 14:03:00',
+                              'Fim': '07/01/2018 15:03:00',
+                            },        
+                      ] ,
+                agendaVisita: [
+                                {
+                                  'Responsavel': 'Andrews Everton',
+                                  'Identificador': '00001/01',
+                                  'Visitante': "Mauro Porto",
+                                  'Inicio': '07/01/2018 14:03:00',
+                                  'Fim': '07/01/2018 15:03:00',
+                                },
+                                {
+                                  'Responsavel': 'Batman',
+                                  'Identificador': '00002/01',
+                                  'Visitante': "Mauro Porto",
+                                  'Inicio': '07/01/2018 14:03:00',
+                                  'Fim': '07/01/2018 15:03:00',
+                                },
+                                {
+                                  'Responsavel': 'Andrews Everton',
+                                  'Identificador': '00001/01',
+                                  'Visitante': "Mauro Porto",
+                                  'Inicio': '07/01/2018 14:03:00',
+                                  'Fim': '07/01/2018 15:03:00',
+                                },        
+                          ] ,
+                modalTerreno:false
             }
         },
     watch: {
@@ -921,38 +962,82 @@ export default {
     },
         
     computed: {
-
-      points: function () {
-        var total = this.stats.length
-        return this.stats.map(function (stat, i) {
-          var point = valueToPoint(stat.value, i, total)
-          return point.x + ',' + point.y
-        }).join(' ')
-      }
-
     },
     
     mounted() {
         
         
-   
-  var extent = [0, 0, 1024, 968];
+      var tis = this;
+      var extent = [0, 0, 1024, 968];
       var projection = new Projection({
-        code: 'xkcd-image',
-        units: 'pixels',
-        extent: extent
+          code: 'xkcd-image',
+          units: 'pixels',
+          extent: extent
       });
+
+
+      var style = new Style({
+        stroke: new Stroke({
+          color: '#f00',
+          width: 1
+        }),
+        fill: new Fill({
+          color: 'rgba(255,0,0,0.1)'
+        }),
+        text: new Text({
+          font: '12px Calibri,sans-serif',
+          fill: new Fill({
+            color: '#000'
+          }),
+          stroke: new Stroke({
+            color: '#f00',
+            width: 3
+          })
+        })
+      });
+
 
 
       var raster = new TileLayer({
-        source: new OSM()
+          source: new OSM()
       });
-var source = new VectorSource({wrapX: false});
+      var source = new VectorSource(
+        {
+          wrapX: false,
+          features: (new GeoJSON()).readFeatures(tis.listaTerrenos)
+        }
+      );
 
-var vector = new VectorLayer({
+      var sourceVendidos = new VectorSource(
+        {
+          wrapX: false,
+          features: (new GeoJSON()).readFeatures(tis.listaTerrenosVendidos)
+        }
+      );
+      
+      
+
+      var vector = new VectorLayer({
         source: source
       });
+      var vectorVendidos = new VectorLayer({
+        source: sourceVendidos,
+        style: function(feature) {
+          style.getText().setText(feature.get('name'));
+          return style;
+        }
+      });      
 
+
+      var viewport = document.getElementById('map');
+
+      function getMinZoom() {
+        var width = viewport.clientWidth;
+        return Math.ceil(Math.LOG2E * Math.log(width / 256));
+      }
+
+
+var initialZoom = getMinZoom();
 
       var map = new Map({
         layers: [
@@ -963,16 +1048,21 @@ var vector = new VectorLayer({
               projection: projection,
               imageExtent: extent
             })
-          }), raster,vector
+          }), raster,vector,vectorVendidos
         ],
         target: 'map',
         view: new View({
           projection: projection,
           center: getCenter(extent),
-          resolution: 1,
+          //resolution: 1,        // important for 100% image size!
+          //maxResolution: 2,
+          //minResolution:2
           //maxZoom: 8
+          minZoom: initialZoom,
+          zoom: initialZoom          
         })
       });
+
 
 
 
@@ -983,41 +1073,52 @@ var vector = new VectorLayer({
             source: source,
             type: 'Polygon'
           });
+
+
+          draw.on('drawend', function (event) {
+            map.removeInteraction(draw);
+              console.log(7777);
+              changeInteraction();      
+          });
+
           map.addInteraction(draw);
+
+
+
       }
 
         
-var select = null; // ref to currently selected interaction
+      var select = null; // ref to currently selected interaction
 
       // select interaction working on "click"
       var selectClick = new Select({
         condition: click
       });
 
-
-
-var changeInteraction = function() {
+      var changeInteraction = function() {
 
           select = selectClick;
        
-        if (select !== null) {
           map.addInteraction(select);
           select.on('select', function(e) {
             console.log(e);
+            tis.modalTerreno = true;
+
+          var writer = new GeoJSON();
+              var geojsonStr = writer.writeFeatures(source.getFeatures());
+              console.log(geojsonStr);
+
+
           });
-        }
+
       };
 
 
 
 
-               addInteraction();
-      changeInteraction();      
+      addInteraction();
+      
 
-
-
-
-        
     }
 
      
@@ -1028,6 +1129,9 @@ var changeInteraction = function() {
 </script>    
 
 <style>
-
+      #map {
+        width: 1024px;
+        height: 800px;
+      }
 
 </style>
