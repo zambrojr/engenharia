@@ -13,6 +13,7 @@
     "sass-loader": "^7.1.0",
     "style-loader": "^0.23.1",
     "vue": "^2.5.21",
+    "vue-carousel": "^0.17.0",
     "vue-cli": "^2.9.6",
     "vue-draggable-resizable": "^1.7.5",
     "vue-loader": "^15.5.0",

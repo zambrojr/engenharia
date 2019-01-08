@@ -105,15 +105,7 @@
       </div>
     </div>
 
-<b-container>
-    <b-row>
-        <b-col class="text-center m-5 rounded pointer md-1">  
-        <b-card >
-            <div id="map" class="map"></div>
-        </b-card>
-        </b-col>
-    </b-row>            
-</b-container>
+    <painel-layer></painel-layer>
 
 
     <div class="container">
@@ -831,11 +823,6 @@
  </body>
 
 
-  <b-modal v-model="modalTerreno" size="lg" ok-only centered >
-      <b-table responsive stacked="md" :small=true :striped=true :items="items"></b-table>
-      <b-table responsive stacked="md" :small=true :striped=true :items="agendaVisita"></b-table>
-  </b-modal>
-
 
 </div>
 
@@ -843,62 +830,23 @@
 
 <script>
 
-import 'ol/ol.css';
-    import Map from 'ol/Map.js';
-      import View from 'ol/View.js';
-      import {getCenter} from 'ol/extent.js';
-      import ImageLayer from 'ol/layer/Image.js';
-      import Projection from 'ol/proj/Projection.js';
-      import Static from 'ol/source/ImageStatic.js';
-      
+import painelLayer from './OpenLayer/painel.vue';
 
-      import Draw from 'ol/interaction/Draw.js';
-      import {Tile as TileLayer, Vector as VectorLayer} from 'ol/layer.js';
-      import {OSM, Vector as VectorSource} from 'ol/source.js';
-
-      import GeoJSON from 'ol/format/GeoJSON.js';
-      import Feature from 'ol/Feature.js';
-      import {click, pointerMove, altKeyOnly} from 'ol/events/condition.js';
-      import Select from 'ol/interaction/Select.js';
-      import {Fill, Stroke, Style, Text} from 'ol/style.js';
-    
- 
-
-var stats = [
-  { label: 'A', value: 100 },
-  { label: 'B', value: 100 },
-  { label: 'C', value: 100 },
-  { label: 'D', value: 100 },
-]
 
 
 export default {
               
 
     components: {
+      'painel-layer' :painelLayer,
+      
  
     },     
     props: {
     },    
     data() {
             return {
-
-                listaTerrenos: {
-                  "type":"FeatureCollection",
-                  "features":[
-                        {"type":"Feature","geometry":{"type":"Polygon","coordinates":[[[344.5,582],[347.5,390],[378.5,391],[371.5,584],[344.5,582]]]},"properties":null},
-                        {"type":"Feature","geometry":{"type":"Polygon","coordinates":[[[449.5,588],[451.5,396],[480.5,396],[477.5,592],[449.5,588]]]},"properties":null},
-                        {"type":"Feature","geometry":{"type":"Polygon","coordinates":[[[127.5,475],[128.5,511],[88.5,512],[80.5,470],[127.5,475]]]},"properties":null},
-                        {"type":"Feature","geometry":{"type":"Polygon","coordinates":[[[518.5,387],[525.5,193],[556.5,194],[550.5,391],[518.5,387]]]},"properties":null}
-                    ]
-                },
-                listaTerrenosVendidos: {
-                  "type":"FeatureCollection",
-                  "features":[
-                        {"type":"Feature","geometry":{"type":"Polygon","coordinates":[[[380.5,585],[382.5,392],[411.5,393],[406.5,587],[380.5,585]]]},"properties":null},
-                        {"type":"Feature","geometry":{"type":"Polygon","coordinates":[[[413.5,586],[414.5,393],[446.5,394],[442.5,589],[413.5,586]]]},"properties":null},
-                    ]
-                },                
+  
 
                 items: [
                             {
@@ -953,172 +901,12 @@ export default {
     },        
         
     methods: {
-        
-        selecionaLote(loteNum){
-          console.log(loteNum);
-
-        }
-        
     },
         
     computed: {
     },
     
     mounted() {
-        
-        
-      var tis = this;
-      var extent = [0, 0, 1024, 968];
-      var projection = new Projection({
-          code: 'xkcd-image',
-          units: 'pixels',
-          extent: extent
-      });
-
-
-      var style = new Style({
-        stroke: new Stroke({
-          color: '#f00',
-          width: 1
-        }),
-        fill: new Fill({
-          color: 'rgba(255,0,0,0.1)'
-        }),
-        text: new Text({
-          font: '12px Calibri,sans-serif',
-          fill: new Fill({
-            color: '#000'
-          }),
-          stroke: new Stroke({
-            color: '#f00',
-            width: 3
-          })
-        })
-      });
-
-
-
-      var raster = new TileLayer({
-          source: new OSM()
-      });
-      var source = new VectorSource(
-        {
-          wrapX: false,
-          features: (new GeoJSON()).readFeatures(tis.listaTerrenos)
-        }
-      );
-
-      var sourceVendidos = new VectorSource(
-        {
-          wrapX: false,
-          features: (new GeoJSON()).readFeatures(tis.listaTerrenosVendidos)
-        }
-      );
-      
-      
-
-      var vector = new VectorLayer({
-        source: source
-      });
-      var vectorVendidos = new VectorLayer({
-        source: sourceVendidos,
-        style: function(feature) {
-          style.getText().setText(feature.get('name'));
-          return style;
-        }
-      });      
-
-
-      var viewport = document.getElementById('map');
-
-      function getMinZoom() {
-        var width = viewport.clientWidth;
-        return Math.ceil(Math.LOG2E * Math.log(width / 256));
-      }
-
-
-var initialZoom = getMinZoom();
-
-      var map = new Map({
-        layers: [
-          new ImageLayer({
-            source: new Static({
-              attributions: '© <a href="http://xkcd.com/license.html">xkcd</a>',
-              url: 'img/mapa.png',
-              projection: projection,
-              imageExtent: extent
-            })
-          }), raster,vector,vectorVendidos
-        ],
-        target: 'map',
-        view: new View({
-          projection: projection,
-          center: getCenter(extent),
-          //resolution: 1,        // important for 100% image size!
-          //maxResolution: 2,
-          //minResolution:2
-          //maxZoom: 8
-          minZoom: initialZoom,
-          zoom: initialZoom          
-        })
-      });
-
-
-
-
-      var draw; // global so we can remove it later
-      function addInteraction() {
-        var value = 'Polygon';
-          draw = new Draw({
-            source: source,
-            type: 'Polygon'
-          });
-
-
-          draw.on('drawend', function (event) {
-            map.removeInteraction(draw);
-              console.log(7777);
-              changeInteraction();      
-          });
-
-          map.addInteraction(draw);
-
-
-
-      }
-
-        
-      var select = null; // ref to currently selected interaction
-
-      // select interaction working on "click"
-      var selectClick = new Select({
-        condition: click
-      });
-
-      var changeInteraction = function() {
-
-          select = selectClick;
-       
-          map.addInteraction(select);
-          select.on('select', function(e) {
-            console.log(e);
-            tis.modalTerreno = true;
-
-          var writer = new GeoJSON();
-              var geojsonStr = writer.writeFeatures(source.getFeatures());
-              console.log(geojsonStr);
-
-
-          });
-
-      };
-
-
-
-
-      addInteraction();
-      
-
     }
 
      
@@ -1127,11 +915,3 @@ var initialZoom = getMinZoom();
 
 
 </script>    
-
-<style>
-      #map {
-        width: 1024px;
-        height: 800px;
-      }
-
-</style>
