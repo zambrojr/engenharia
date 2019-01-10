@@ -13,7 +13,7 @@
 </b-container>
 
 
-  <b-modal v-model="modalTerreno" ok-only size="lg" centered title="Lote 63 - Lagoa Dos Cisnes - Macacos - mg" >
+  <b-modal v-model="modalTerreno" ok-only size="lg" @hide="removeTerrenosSelecionados" centered title="Lote 63 - Lagoa Dos Cisnes - Macacos - mg" >
     <b-card>
       <b-row class="text-left">
         <b-col><h4>Valor</h4></b-col>
@@ -81,7 +81,7 @@ import 'ol/ol.css';
 
       import GeoJSON from 'ol/format/GeoJSON.js';
       import Feature from 'ol/Feature.js';
-      import {click, pointerMove, altKeyOnly} from 'ol/events/condition.js';
+      import {click, pointerMove, altKeyOnly, doubleClick} from 'ol/events/condition.js';
       import Select from 'ol/interaction/Select.js';
       import {Fill, Stroke, Style, Text, RegularShape} from 'ol/style.js';
 
@@ -113,6 +113,8 @@ export default {
 
                 /* */
 
+                flagMod: '',
+
                 map: {},
                 projection: {},
                 draw: {},
@@ -143,19 +145,53 @@ export default {
             }
         },
 
+    watch: {
+
+      flagMod() {
+
+        if(this.flagMod == 'iteracao'){
+          this.iniciaModoNavegacao();
+          this.iniciaModoIteracao();
+        }
+        else if(this.flagMod == 'marcacao'){
+          this.iniciaModoNavegacao();
+          this.iniciaModoMarcacaoTerreno();
+          this.terminaModoIteracao();
+        } else{
+          this.terminaModoIteracao();
+          this.terminaModoNavegacao();
+        }
+
+      }
+
+    } ,       
+
     /* */
     methods: {
 
-      /* */
-      eventoFimMarcacaoTerreno(event)
-      {
-          this.map.removeInteraction(this.draw);
-          console.log(1);
-          this.iniciaModoIteracao();
+      modoMarcacaoTerreno() {
+        this.flagMod = 'marcacao';
+        console.log('modoMarcacaoTerreno');
       },
 
       /* */
-      modoMarcacaoTerreno() {
+      modoNavegacao()
+      {          
+          if (this.checkLayer(this.layerDisponiveis) === false){
+            this.flagMod = 'iteracao';
+          } else {
+            this.flagMod = '';           
+          }
+          console.log('flagMod');
+          console.log(this.flagMod);
+      },      
+
+      /*  -------------------------------------------------------------------- */
+      /*  -------------------------------------------------------------------- */
+
+
+      /* */
+      iniciaModoMarcacaoTerreno() {
 
         var iteracoes = this.map.getInteractions();
 
@@ -165,74 +201,86 @@ export default {
         });
         if(existe){ this.eventoFimMarcacaoTerreno(); this.terminaModoNavegacao(); return; }
 
-        this.iniciaModoNavegacao();
-        this.terminaModoIteracao();
+
 
           if(!(this.draw instanceof Draw)){
+            
               this.draw = new Draw({
                 source: this.sourceDisponiveis,
                 type: 'Polygon',
+                style: new Style({
+                        image: 
+                        //Start of the Icon style
+                        /*new ol.style.Icon({
+                            src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/95/Crosshairs_Red.svg/1024px-Crosshairs_Red.svg.png',
+                            size: [10, 10],
+                            opacity: 1
+                        })*/
+                        new RegularShape({  fill: new Fill({  color: 'black'  }), points: 4,  radius1: 15,  radius2: 1  }),
+                        stroke: new Stroke({color: 'blue',  width: 1  }),
+                        fill: new Fill({  color: 'rgba(255,255,0,0.5)'  })
+                    })    
+    
               });
           }
 
           //var
           this.draw.on('drawend', this.eventoFimMarcacaoTerreno);
           this.map.addInteraction(this.draw);
+
+          console.log('modoMarcacaoTerreno');
       },
 
       /* */
-      checkLayer(layer) {
-          var res = false;
-          for (var i=0;i<this.map.getLayers().getLength();i++) {
-              if (this.map.getLayers().getArray()[i] === layer) { //check if layer exists
-                  res = true; //if exists, return true
-              }
-          }
-          return res;
-      },
+      eventoFimMarcacaoTerreno(event)
+      {
+          this.map.removeInteraction(this.draw);
+          console.log('eventoFimMarcacaoTerreno');
+          this.flagMod = 'iteracao';
+      },      
 
-      /* */
-      terminaModoNavegacao()
-      {          
-          if (this.checkLayer(this.layerDisponiveis) !== false){
-            this.map.removeLayer(this.layerDisponiveis);
-            this.map.removeLayer(this.layerVendidos); 
-          }           
-      },
-      
-      
+      /*  -------------------------------------------------------------------- */
+      /*  -------------------------------------------------------------------- */
+
       /* */
       iniciaModoNavegacao()
       {          
           if (this.checkLayer(this.layerDisponiveis) === false){
             this.map.addLayer(this.layerDisponiveis);
             this.map.addLayer(this.layerVendidos);
-            this.iniciaModoIteracao();
+            console.log('iniciaModoNavegacao');
           }
       },   
       
-      
+      /* */
+      terminaModoNavegacao()
+      {          
+          if (this.checkLayer(this.layerDisponiveis) !== false){
+            this.map.removeLayer(this.layerDisponiveis);
+            this.map.removeLayer(this.layerVendidos); 
+            console.log('terminaModoNavegacao');
+          }           
+      },
+
+      /*  -------------------------------------------------------------------- */
+      /*  -------------------------------------------------------------------- */      
+
       /* */
       iniciaModoIteracao(){
             this.selectIteracaoTerreno = new Select({ condition: click  });
             this.selectIteracaoTerreno.on('select', this.getFeaturesTerrenos);
             this.map.addInteraction(this.selectIteracaoTerreno);
+            console.log('iniciaModoIteracao');
       },
 
       /* */
       terminaModoIteracao(){
             this.map.removeInteraction(this.selectIteracaoTerreno);
+             console.log('terminaModoIteracao');
       },
 
-      /* */
-      modoNavegacao()
-      {          
-          if (this.checkLayer(this.layerDisponiveis) === false){
-            this.iniciaModoNavegacao();
-          } else {
-            this.terminaModoNavegacao();            
-          }
-      },         
+      /*  -------------------------------------------------------------------- */
+      /*  -------------------------------------------------------------------- */     
 
       /* */ 
       iniciaMapa()
@@ -307,6 +355,17 @@ export default {
                       ]),
                   });
                   
+      },
+
+      /* */
+      checkLayer(layer) {
+          var res = false;
+          for (var i=0;i<this.map.getLayers().getLength();i++) {
+              if (this.map.getLayers().getArray()[i] === layer) { //check if layer exists
+                  res = true; //if exists, return true
+              }
+          }
+          return res;
       },
 
       /* */ 
@@ -401,6 +460,11 @@ export default {
             //console.log(geojsonStrDisponiveis);
             //console.log(geojsonStrVendidos);
             this.openModalTerreno();
+      },
+
+      /* */
+      removeTerrenosSelecionados(){
+        this.selectIteracaoTerreno.getFeatures().clear();
       },
 
       /* */
