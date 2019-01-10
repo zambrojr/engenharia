@@ -4,7 +4,7 @@
 <section>
 <b-container>
     <b-row>
-        <b-col class="text-center m-5 rounded pointer md-1">  
+        <b-col class="text-center rounded pointer">  
         <b-card >
             <div id="map" class="map"></div>
         </b-card>
@@ -36,10 +36,10 @@
                   <b-img thumbnail  src="https://picsum.photos/250/250/?image=67" alt="Thumbnail" />
                 </slide>
                 <slide>
-                  <b-img thumbnail  src="https://picsum.photos/250/250/?image=66" alt="Thumbnail" />
+                  <b-img thumbnail  src="http://www.globalempreendimentos.com.br/fotos/negocio-lote-a-partir-de-1000m-no-condominio-estancia-do-cipo-72.jpg" alt="Thumbnail" />
                 </slide>
                 <slide>
-                  <b-img thumbnail  src="https://picsum.photos/250/250/?image=61" alt="Thumbnail" />
+                  <b-img thumbnail  src="http://www.globalempreendimentos.com.br/fotos/negocio-lote-a-partir-de-1000m-no-condominio-estancia-do-cipo-79.jpg" alt="Thumbnail" />
                 </slide>
                 <slide>
                   <b-img thumbnail src="https://picsum.photos/250/250/?image=62" alt="Thumbnail" />
@@ -150,16 +150,21 @@ export default {
       flagMod() {
 
         if(this.flagMod == 'iteracao'){
+          console.log('flagMod:iteracao')
+          this.terminaModoMarcacaoTerreno();
           this.iniciaModoNavegacao();
           this.iniciaModoIteracao();
         }
         else if(this.flagMod == 'marcacao'){
+          console.log('flagMod:marcacao')
           this.iniciaModoNavegacao();
           this.iniciaModoMarcacaoTerreno();
           this.terminaModoIteracao();
         } else{
+          console.log('flagMod:""')
           this.terminaModoIteracao();
           this.terminaModoNavegacao();
+          this.terminaMarcacaoTerreno();
         }
 
       }
@@ -176,13 +181,9 @@ export default {
 
       /* */
       modoNavegacao()
-      {          
-          if (this.checkLayer(this.layerDisponiveis) === false){
-            this.flagMod = 'iteracao';
-          } else {
-            this.flagMod = '';           
-          }
-          console.log('flagMod');
+      {                   
+          this.flagMod = this.flagMod == 'iteracao' ? '' : 'iteracao';
+          console.log('flagModwww');
           console.log(this.flagMod);
       },      
 
@@ -231,12 +232,24 @@ export default {
           console.log('modoMarcacaoTerreno');
       },
 
+
+      /* */
+      terminaMarcacaoTerreno(){
+          this.map.removeInteraction(this.draw);
+      },
+
+
+      /* */
+      terminaModoMarcacaoTerreno(){
+          this.terminaMarcacaoTerreno();
+          console.log('eventoFimMarcacaoTerreno');
+          this.flagMod = 'iteracao';
+      },
+
       /* */
       eventoFimMarcacaoTerreno(event)
       {
-          this.map.removeInteraction(this.draw);
-          console.log('eventoFimMarcacaoTerreno');
-          this.flagMod = 'iteracao';
+        this.terminaModoMarcacaoTerreno();
       },      
 
       /*  -------------------------------------------------------------------- */
@@ -505,5 +518,6 @@ export default {
       .ol-touch .rotate-north {
         top: 80px;
       }
+      
     </style>
 </style>
