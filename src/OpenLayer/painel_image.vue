@@ -87,7 +87,6 @@ import 'ol/ol.css';
 
       import {defaults as defaultControls, Control} from 'ol/control.js';
       import { Carousel, Slide } from 'vue-carousel';
-      import {fromLonLat} from 'ol/proj.js';
  
 export default {
               
@@ -111,7 +110,6 @@ export default {
                 agendaVisita: [   {     'Responsavel': 'Andrews Everton',     'Identificador': '00001/01',     'Visitante': "Mauro Porto",     'Inicio': '07/01/2018 14:03:00',     'Fim': '07/01/2018 15:03:00',   },   {     'Responsavel': 'Batman',     'Identificador': '00002/01',     'Visitante': "Mauro Porto",     'Inicio': '07/01/2018 14:03:00',     'Fim': '07/01/2018 15:03:00',   },   {     'Responsavel': 'Andrews Everton',     'Identificador': '00001/01',     'Visitante': "Mauro Porto",     'Inicio': '07/01/2018 14:03:00',     'Fim': '07/01/2018 15:03:00',   },     ] ,
                 modalTerreno:false,
                 selectIteracaoTerreno: {},
-                view:{},
 
                 /* */
 
@@ -128,25 +126,21 @@ export default {
                 sourceVendidos:{},
                 layerVendidos:{},
 
-
                 listaTerrenos: {
                   "type":"FeatureCollection",
                   "features":[
-                        {"type":"Feature", "geometry":{"type":"Polygon","coordinates":[[[518.5,387],[525.5,193],[556.5,194],[550.5,391],[518.5,387]]]},"properties":{"name":"Angola"}},
                         {"type":"Feature","geometry":{"type":"Polygon","coordinates":[[[344.5,582],[347.5,390],[378.5,391],[371.5,584],[344.5,582]]]},"properties":null},
                         {"type":"Feature","geometry":{"type":"Polygon","coordinates":[[[449.5,588],[451.5,396],[480.5,396],[477.5,592],[449.5,588]]]},"properties":null},
                         {"type":"Feature","geometry":{"type":"Polygon","coordinates":[[[127.5,475],[128.5,511],[88.5,512],[80.5,470],[127.5,475]]]},"properties":null},
-                        {"type":"Feature","geometry":{"type":"Polygon","coordinates":[[[-5005358.767233787,-2131267.3844470964],[-5005215.447805753,-2131558.8006174336],[-5005159.314363105,-2131532.5253889607],[-5005301.439462573,-2131239.9148900565],[-5005358.767233787,-2131267.3844470964]]]},"properties":{"name":"59"}},
-                        {"type":"Feature","geometry":{"type":"Polygon","coordinates":[[[-5005293.974909029,-2131230.957425804],[-5005153.34272027,-2131528.9424032597],[-5005090.043306222,-2131495.501203385],[-5005232.168405689,-2131204.085033048],[-5005293.974909029,-2131230.957425804]]]},"properties":{"name":"60"}},
-                        {"type":"Feature","geometry":{"type":"Polygon","coordinates":[[[-5005220.225120021,-2131200.502047347],[-5005079.29434912,-2131493.112546251],[-5005023.160906473,-2131466.8373177783],[-5005166.480334507,-2131171.83816174],[-5005220.225120021,-2131200.502047347]]]},"properties":{"name":"61"}},
-                        {"type":"Feature","geometry":{"type":"Polygon","coordinates":[[[-5005154.537048838,-2131167.060847472],[-5005010.023292237,-2131459.671346376],[-5004952.695521023,-2131428.6188036352],[-5005092.431963357,-2131137.202633298],[-5005154.537048838,-2131167.060847472]]]},"properties":{"name":"62"}},
-                        {"type":"Feature","geometry":{"type":"Polygon","coordinates":[[[-5005015.994935071,-2131098.9841191554],[-5004872.675507036,-2131393.9832751937],[-5004816.542064389,-2131366.513718154],[-5004958.667163857,-2131071.5145621155],[-5005015.994935071,-2131098.9841191554]]]},"properties":{"name":"64"}},
-                        {"type":"Feature","geometry":{"type":"Polygon","coordinates":[[[-5004949.709699606,-2131064.3485907135],[-5004806.390271571,-2131362.9307324523],[-5004746.673843224,-2131336.6555039794],[-5004887.604614124,-2131038.0733622406],[-5004949.709699606,-2131064.3485907135]]]},"properties":{"name":"65"}}                    ]
+                        {"type":"Feature","geometry":{"type":"Polygon","coordinates":[[[518.5,387],[525.5,193],[556.5,194],[550.5,391],[518.5,387]]]},"properties":null}
+                    ]
                 },
                 listaTerrenosVendidos: {
                   "type":"FeatureCollection",
                   "features":[
-                        {"type":"Feature","geometry":{"type":"Polygon","coordinates":[[[-5005083.474499105,-2131136.008304731],[-5004942.543728204,-2131427.424475068],[-5004882.827299857,-2131398.7605894613],[-5005023.758070757,-2131100.1784477225],[-5005083.474499105,-2131136.008304731]]]},"properties":{"name":"63"}},                    ]
+                        {"type":"Feature","geometry":{"type":"Polygon","coordinates":[[[380.5,585],[382.5,392],[411.5,393],[406.5,587],[380.5,585]]]},"properties":null},
+                        {"type":"Feature","geometry":{"type":"Polygon","coordinates":[[[413.5,586],[414.5,393],[446.5,394],[442.5,589],[413.5,586]]]},"properties":null},
+                    ]
                 },                
             }
         },
@@ -156,7 +150,7 @@ export default {
       flagMod() {
 
         if(this.flagMod == 'iteracao'){
-          this.flyto(function() {});
+          console.log('flagMod:iteracao')
           this.terminaModoMarcacaoTerreno();
           this.iniciaModoNavegacao();
           this.iniciaModoIteracao();
@@ -343,66 +337,38 @@ export default {
         return RotateNorthControl;
       }(Control, this));
 
-          var london = fromLonLat([-0.12755, 51.507222]);
-          this.view = new View({
-                            center: fromLonLat([ -44.962855, -18.797930]),
-                            zoom: 3         
-                    })
 
           this.map = new Map({
                     layers: [
-                              /*new ImageLayer({
+                              new ImageLayer({
                                 source: new Static({
                                   attributions: '© <a href="http://xkcd.com/license.html">xkcd</a>',
                                   url: 'img/mapa.png',
                                   projection: this.projection,
                                   imageExtent: this.extent
                                 })
-                              }), */
+                              }), 
                               this.TileLayer
                               //this.layerDisponiveis,
                               //this.layerVendidos
                     ],
                     target: 'map',
-                    view: this.view,
+                    view: new View({
+                            projection: this.projection,
+                            center: getCenter(this.extent),
+                            //resolution: 1,        // important for 100% image size!
+                            //maxResolution: 2,
+                            //minResolution:2
+                            //maxZoom: 8
+                            minZoom: this.initialZoom,
+                            zoom: this.initialZoom          
+                    }),
                     controls: defaultControls().extend([
                         new RotateNorthControl()
                       ]),
                   });
-
                   
       },
-
-      flyto(done)                    
-      {
-
-       var parts = 4;
-        var called = false;
-        function callback(complete) {
-          --parts;
-          if (called) {
-            return;
-          }
-          if (parts === 0 || !complete) {
-            called = true;
-            done(complete);
-          }
-        }
-
-          var LAGOA = fromLonLat([ -44.962855, -18.797930]);
-            this.view.animate({
-            center: LAGOA,
-            duration: 1000
-            }, callback);    
-            this.view.animate({
-            zoom: 14 - 1,
-            duration: 1000 / 2
-            }, {
-            zoom: 14,
-            duration: 1000 / 2
-            }, callback);         
-      }     ,
-
 
       /* */
       checkLayer(layer) {
@@ -428,13 +394,8 @@ export default {
       /* */
       initTileLayer()
       {
-        var source = new OSM();
-        source.on('tileloadend', function() {
-          console.log('terminou')
-        });        
         this.TileLayer = new TileLayer({
-            source: source,
-            preload: 1,
+            source: new OSM()
         });      
       },
 
@@ -443,21 +404,10 @@ export default {
       {
           this.sourceDisponiveis = new VectorSource({
               wrapX: false,
-              features: (new GeoJSON()).readFeatures(this.listaTerrenos),
-          });
-
-          var style = new Style({
-            stroke: new Stroke({  color: 'rgba(40,142,53,0.4)',  width: 1  }),
-            fill: new Fill({  color: 'rgba(0,255,0,0.1)' }),            
-            text: new Text({  font: '20px Calibri,sans-serif',  })
-          });  
-
+              features: (new GeoJSON()).readFeatures(this.listaTerrenos)
+            });
           this.layerDisponiveis = new VectorLayer({
-            source: this.sourceDisponiveis,
-            style: function(feature) {
-              style.getText().setText(feature.get('name'));
-              return style;
-            }
+            source: this.sourceDisponiveis
           });      
           this.layerDisponiveis.set('name', 'layerDisponiveis');
       },
@@ -471,9 +421,23 @@ export default {
             });
 
           var style = new Style({
-            stroke: new Stroke({  color: '#f00',  width: 1  }),
-            fill: new Fill({  color: 'rgba(255,0,0,0.1)'  }),
-            text: new Text({  font: '20px Calibri,sans-serif',  })
+            stroke: new Stroke({
+              color: '#f00',
+              width: 1
+            }),
+            fill: new Fill({
+              color: 'rgba(255,0,0,0.1)'
+            }),
+            text: new Text({
+              font: '12px Calibri,sans-serif',
+              fill: new Fill({
+                color: '#000'
+              }),
+              stroke: new Stroke({
+                color: '#f00',
+                width: 3
+              })
+            })
           });          
 
           this.layerVendidos =new VectorLayer({
@@ -500,9 +464,9 @@ export default {
       {
             //tis.modalTerreno = true;
             var writer = new GeoJSON();
-            var geojsonStrDisponiveis = writer.writeFeatures(this.sourceDisponiveis.getFeatures());
+            //var geojsonStrDisponiveis = writer.writeFeatures(this.sourceDisponiveis.getFeatures());
             //var geojsonStrVendidos = writer.writeFeatures(this.sourceVendidos.getFeatures());
-            console.log(geojsonStrDisponiveis);
+            //console.log(geojsonStrDisponiveis);
             //console.log(geojsonStrVendidos);
             this.openModalTerreno();
       },
