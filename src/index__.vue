@@ -831,7 +831,7 @@
 
 <script>
 
-import painelLayer from './OpenLayer/painel.vue';
+import painelLayer from './OpenLayer/painelG.vue';
 
 
 

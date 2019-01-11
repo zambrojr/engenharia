@@ -9,57 +9,14 @@
             <div id="map" class="map"></div>
         </b-card>
         </b-col>
-    </b-row>            
+    </b-row>  
+    <b-modal v-model="modalTerreno" ok-only size="lg" @hide="removeTerrenosSelecionados" centered title="Lote 63 - Lagoa Dos Cisnes - Macacos - mg" >
+      <painel-layer></painel-layer>          
+    </b-modal>
 </b-container>
 
 
-  <b-modal v-model="modalTerreno" ok-only size="lg" @hide="removeTerrenosSelecionados" centered title="Lote 63 - Lagoa Dos Cisnes - Macacos - mg" >
-    <b-card>
-      <b-row class="text-left">
-        <b-col><h4>Valor</h4></b-col>
-        <b-col>R$100.345,45</b-col>
-      </b-row>
-      <b-row class="text-left">
-        <b-col><h4>Area</h4></b-col>
-        <b-col>200M2</b-col>
-      </b-row>
-      <b-row>
-          <b-col>
-            <carousel :perPage=5 :paginationEnabled=false>
-                <slide>
-                  <b-img thumbnail  src="https://picsum.photos/250/250/?image=71" alt="Thumbnail" />
-                </slide>
-                <slide>
-                  <b-img thumbnail  src="https://picsum.photos/250/250/?image=83" alt="Thumbnail" />
-                </slide>
-                <slide>
-                  <b-img thumbnail  src="https://picsum.photos/250/250/?image=67" alt="Thumbnail" />
-                </slide>
-                <slide>
-                  <b-img thumbnail  src="http://www.globalempreendimentos.com.br/fotos/negocio-lote-a-partir-de-1000m-no-condominio-estancia-do-cipo-72.jpg" alt="Thumbnail" />
-                </slide>
-                <slide>
-                  <b-img thumbnail  src="http://www.globalempreendimentos.com.br/fotos/negocio-lote-a-partir-de-1000m-no-condominio-estancia-do-cipo-79.jpg" alt="Thumbnail" />
-                </slide>
-                <slide>
-                  <b-img thumbnail src="https://picsum.photos/250/250/?image=62" alt="Thumbnail" />
-                </slide>        
-            </carousel>
-          </b-col>
-        </b-row>
-    
-        <div class="form-row">
-            <div class="col border rounded" style="overflow-x:auto">    
-              <b-table class="small text-left" responsive stacked="md" :small=true :striped=true :items="items"></b-table>
-            </div>
-        </div>
-        <div class="form-row">
-            <div class="col border rounded" style="overflow-x:auto">            
-              <b-table class="small text-left" responsive stacked="md" :small=true :striped=true :items="agendaVisita"></b-table>
-            </div>
-        </div>      
-</b-card>
-  </b-modal>
+  
 
   </section>
 
@@ -85,16 +42,16 @@ import 'ol/ol.css';
       import Select from 'ol/interaction/Select.js';
       import {Fill, Stroke, Style, Text, RegularShape} from 'ol/style.js';
 
-      import {defaults as defaultControls, Control} from 'ol/control.js';
-      import { Carousel, Slide } from 'vue-carousel';
+      import {defaults as defaultControls, Control} from 'ol/control.js';      
       import {fromLonLat} from 'ol/proj.js';
+
+      import painelTerreno from './painelTerreno.vue';
  
 export default {
               
     /* */              
     components: {
-      Carousel,
-      Slide      
+      'painel-layer' :painelTerreno,      
     },   
 
     /* */
@@ -106,18 +63,15 @@ export default {
     data() {
             return {
 
-
-                items: [ { 'Responsavel': 'Andrews Everton', 'Identificador': '00001/01', 'Visitante': "Mauro Porto", 'Inicio': '07/01/2018 14:03:00', 'Fim': '07/01/2018 15:03:00',                              },                              { 'Responsavel': 'Batman', 'Identificador': '00002/01', 'Visitante': "Mauro Porto", 'Inicio': '07/01/2018 14:03:00', 'Fim': '07/01/2018 15:03:00',                              },                              { 'Responsavel': 'Andrews Everton', 'Identificador': '00001/01', 'Visitante': "Mauro Porto", 'Inicio': '07/01/2018 14:03:00', 'Fim': '07/01/2018 15:03:00',                              }, ] ,                  
-                agendaVisita: [   {     'Responsavel': 'Andrews Everton',     'Identificador': '00001/01',     'Visitante': "Mauro Porto",     'Inicio': '07/01/2018 14:03:00',     'Fim': '07/01/2018 15:03:00',   },   {     'Responsavel': 'Batman',     'Identificador': '00002/01',     'Visitante': "Mauro Porto",     'Inicio': '07/01/2018 14:03:00',     'Fim': '07/01/2018 15:03:00',   },   {     'Responsavel': 'Andrews Everton',     'Identificador': '00001/01',     'Visitante': "Mauro Porto",     'Inicio': '07/01/2018 14:03:00',     'Fim': '07/01/2018 15:03:00',   },     ] ,
-                modalTerreno:false,
+                modalTerreno: false,
                 selectIteracaoTerreno: {},
-                view:{},
 
                 /* */
 
                 flagMod: '',
 
                 map: {},
+                view:{},
                 projection: {},
                 draw: {},
                 initialZoom: null,
@@ -343,12 +297,10 @@ export default {
         return RotateNorthControl;
       }(Control, this));
 
-          var london = fromLonLat([-0.12755, 51.507222]);
           this.view = new View({
                             center: fromLonLat([ -44.962855, -18.797930]),
                             zoom: 3         
                     })
-
           this.map = new Map({
                     layers: [
                               /*new ImageLayer({
@@ -360,8 +312,6 @@ export default {
                                 })
                               }), */
                               this.TileLayer
-                              //this.layerDisponiveis,
-                              //this.layerVendidos
                     ],
                     target: 'map',
                     view: this.view,
@@ -428,13 +378,8 @@ export default {
       /* */
       initTileLayer()
       {
-        var source = new OSM();
-        source.on('tileloadend', function() {
-          console.log('terminou')
-        });        
         this.TileLayer = new TileLayer({
-            source: source,
-            preload: 1,
+            source: new OSM()
         });      
       },
 
@@ -500,10 +445,11 @@ export default {
       {
             //tis.modalTerreno = true;
             var writer = new GeoJSON();
-            var geojsonStrDisponiveis = writer.writeFeatures(this.sourceDisponiveis.getFeatures());
+            //var geojsonStrDisponiveis = writer.writeFeatures(this.sourceDisponiveis.getFeatures());
             //var geojsonStrVendidos = writer.writeFeatures(this.sourceVendidos.getFeatures());
-            console.log(geojsonStrDisponiveis);
+            //console.log(geojsonStrDisponiveis);
             //console.log(geojsonStrVendidos);
+            console.log(e);
             this.openModalTerreno();
       },
 

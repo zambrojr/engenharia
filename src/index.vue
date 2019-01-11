@@ -792,7 +792,7 @@
 
 <script>
 
-import painelLayer from './OpenLayer/painel.vue';
+import painelLayer from './OpenLayer/painel_image.vue';
 
 
 
@@ -801,63 +801,14 @@ export default {
 
     components: {
       'painel-layer' :painelLayer,
-      
- 
     },     
+
     props: {
     },    
+    
     data() {
             return {
-  
-
-                items: [
-                            {
-                              'Responsavel': 'Andrews Everton',
-                              'Identificador': '00001/01',
-                              'Visitante': "Mauro Porto",
-                              'Inicio': '07/01/2018 14:03:00',
-                              'Fim': '07/01/2018 15:03:00',
-                            },
-                            {
-                              'Responsavel': 'Batman',
-                              'Identificador': '00002/01',
-                              'Visitante': "Mauro Porto",
-                              'Inicio': '07/01/2018 14:03:00',
-                              'Fim': '07/01/2018 15:03:00',
-                            },
-                            {
-                              'Responsavel': 'Andrews Everton',
-                              'Identificador': '00001/01',
-                              'Visitante': "Mauro Porto",
-                              'Inicio': '07/01/2018 14:03:00',
-                              'Fim': '07/01/2018 15:03:00',
-                            },        
-                      ] ,
-                agendaVisita: [
-                                {
-                                  'Responsavel': 'Andrews Everton',
-                                  'Identificador': '00001/01',
-                                  'Visitante': "Mauro Porto",
-                                  'Inicio': '07/01/2018 14:03:00',
-                                  'Fim': '07/01/2018 15:03:00',
-                                },
-                                {
-                                  'Responsavel': 'Batman',
-                                  'Identificador': '00002/01',
-                                  'Visitante': "Mauro Porto",
-                                  'Inicio': '07/01/2018 14:03:00',
-                                  'Fim': '07/01/2018 15:03:00',
-                                },
-                                {
-                                  'Responsavel': 'Andrews Everton',
-                                  'Identificador': '00001/01',
-                                  'Visitante': "Mauro Porto",
-                                  'Inicio': '07/01/2018 14:03:00',
-                                  'Fim': '07/01/2018 15:03:00',
-                                },        
-                          ] ,
-                modalTerreno:false
-            }
+              }
         },
     watch: {
     },        

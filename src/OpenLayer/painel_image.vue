@@ -9,57 +9,14 @@
             <div id="map" class="map"></div>
         </b-card>
         </b-col>
-    </b-row>            
+    </b-row>       
+    <b-modal v-model="modalTerreno" ok-only size="lg" @hide="removeTerrenosSelecionados" centered title="Lote 63 - Lagoa Dos Cisnes - Macacos - mg" >
+      <painel-layer></painel-layer>          
+    </b-modal>         
 </b-container>
 
 
-  <b-modal v-model="modalTerreno" ok-only size="lg" @hide="removeTerrenosSelecionados" centered title="Lote 63 - Lagoa Dos Cisnes - Macacos - mg" >
-    <b-card>
-      <b-row class="text-left">
-        <b-col><h4>Valor</h4></b-col>
-        <b-col>R$100.345,45</b-col>
-      </b-row>
-      <b-row class="text-left">
-        <b-col><h4>Area</h4></b-col>
-        <b-col>200M2</b-col>
-      </b-row>
-      <b-row>
-          <b-col>
-            <carousel :perPage=5 :paginationEnabled=false>
-                <slide>
-                  <b-img thumbnail  src="https://picsum.photos/250/250/?image=71" alt="Thumbnail" />
-                </slide>
-                <slide>
-                  <b-img thumbnail  src="https://picsum.photos/250/250/?image=83" alt="Thumbnail" />
-                </slide>
-                <slide>
-                  <b-img thumbnail  src="https://picsum.photos/250/250/?image=67" alt="Thumbnail" />
-                </slide>
-                <slide>
-                  <b-img thumbnail  src="http://www.globalempreendimentos.com.br/fotos/negocio-lote-a-partir-de-1000m-no-condominio-estancia-do-cipo-72.jpg" alt="Thumbnail" />
-                </slide>
-                <slide>
-                  <b-img thumbnail  src="http://www.globalempreendimentos.com.br/fotos/negocio-lote-a-partir-de-1000m-no-condominio-estancia-do-cipo-79.jpg" alt="Thumbnail" />
-                </slide>
-                <slide>
-                  <b-img thumbnail src="https://picsum.photos/250/250/?image=62" alt="Thumbnail" />
-                </slide>        
-            </carousel>
-          </b-col>
-        </b-row>
-    
-        <div class="form-row">
-            <div class="col border rounded" style="overflow-x:auto">    
-              <b-table class="small text-left" responsive stacked="md" :small=true :striped=true :items="items"></b-table>
-            </div>
-        </div>
-        <div class="form-row">
-            <div class="col border rounded" style="overflow-x:auto">            
-              <b-table class="small text-left" responsive stacked="md" :small=true :striped=true :items="agendaVisita"></b-table>
-            </div>
-        </div>      
-</b-card>
-  </b-modal>
+
 
   </section>
 
@@ -86,14 +43,14 @@ import 'ol/ol.css';
       import {Fill, Stroke, Style, Text, RegularShape} from 'ol/style.js';
 
       import {defaults as defaultControls, Control} from 'ol/control.js';
-      import { Carousel, Slide } from 'vue-carousel';
+      
+      import painelTerreno from './painelTerreno.vue';
  
 export default {
               
     /* */              
     components: {
-      Carousel,
-      Slide      
+      'painel-layer' :painelTerreno,       
     },   
 
     /* */
@@ -106,8 +63,6 @@ export default {
             return {
 
 
-                items: [ { 'Responsavel': 'Andrews Everton', 'Identificador': '00001/01', 'Visitante': "Mauro Porto", 'Inicio': '07/01/2018 14:03:00', 'Fim': '07/01/2018 15:03:00',                              },                              { 'Responsavel': 'Batman', 'Identificador': '00002/01', 'Visitante': "Mauro Porto", 'Inicio': '07/01/2018 14:03:00', 'Fim': '07/01/2018 15:03:00',                              },                              { 'Responsavel': 'Andrews Everton', 'Identificador': '00001/01', 'Visitante': "Mauro Porto", 'Inicio': '07/01/2018 14:03:00', 'Fim': '07/01/2018 15:03:00',                              }, ] ,                  
-                agendaVisita: [   {     'Responsavel': 'Andrews Everton',     'Identificador': '00001/01',     'Visitante': "Mauro Porto",     'Inicio': '07/01/2018 14:03:00',     'Fim': '07/01/2018 15:03:00',   },   {     'Responsavel': 'Batman',     'Identificador': '00002/01',     'Visitante': "Mauro Porto",     'Inicio': '07/01/2018 14:03:00',     'Fim': '07/01/2018 15:03:00',   },   {     'Responsavel': 'Andrews Everton',     'Identificador': '00001/01',     'Visitante': "Mauro Porto",     'Inicio': '07/01/2018 14:03:00',     'Fim': '07/01/2018 15:03:00',   },     ] ,
                 modalTerreno:false,
                 selectIteracaoTerreno: {},
 
@@ -116,6 +71,7 @@ export default {
                 flagMod: '',
 
                 map: {},
+                view:{},
                 projection: {},
                 draw: {},
                 initialZoom: null,
@@ -337,6 +293,12 @@ export default {
         return RotateNorthControl;
       }(Control, this));
 
+          this.view = new View({
+                            projection: this.projection,
+                            center: getCenter(this.extent),
+                            minZoom: this.initialZoom,
+                            zoom: this.initialZoom        
+                    })
 
           this.map = new Map({
                     layers: [
@@ -349,20 +311,9 @@ export default {
                                 })
                               }), 
                               this.TileLayer
-                              //this.layerDisponiveis,
-                              //this.layerVendidos
                     ],
                     target: 'map',
-                    view: new View({
-                            projection: this.projection,
-                            center: getCenter(this.extent),
-                            //resolution: 1,        // important for 100% image size!
-                            //maxResolution: 2,
-                            //minResolution:2
-                            //maxZoom: 8
-                            minZoom: this.initialZoom,
-                            zoom: this.initialZoom          
-                    }),
+                    view: this.view,
                     controls: defaultControls().extend([
                         new RotateNorthControl()
                       ]),
@@ -421,23 +372,9 @@ export default {
             });
 
           var style = new Style({
-            stroke: new Stroke({
-              color: '#f00',
-              width: 1
-            }),
-            fill: new Fill({
-              color: 'rgba(255,0,0,0.1)'
-            }),
-            text: new Text({
-              font: '12px Calibri,sans-serif',
-              fill: new Fill({
-                color: '#000'
-              }),
-              stroke: new Stroke({
-                color: '#f00',
-                width: 3
-              })
-            })
+            stroke: new Stroke({  color: '#f00',  width: 1  }),
+            fill: new Fill({  color: 'rgba(255,0,0,0.1)'  }),
+            text: new Text({  font: '20px Calibri,sans-serif',  })
           });          
 
           this.layerVendidos =new VectorLayer({
