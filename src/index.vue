@@ -792,7 +792,7 @@
 
 <script>
 
-import painelLayer from './OpenLayer/painel_image.vue';
+import painelLayer from './OpenLayer/painel.vue';
 
 
 
