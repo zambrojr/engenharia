@@ -16,6 +16,12 @@ import App from './index.vue'
 import BootstrapVue from 'bootstrap-vue'
 Vue.use(BootstrapVue);
 
+import vuejquery from 'vue-jquery';
+Vue.use(vuejquery);
+
+import ModuleLibrary from '@coreui/vue';
+Vue.use(ModuleLibrary);
+
 
 new Vue({
   el: '#app',

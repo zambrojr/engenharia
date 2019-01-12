@@ -6,7 +6,7 @@
     <b-row>
         <b-col class="text-center rounded pointer">  
         <b-card >
-            <div id="map" class="map"></div>
+            <div :id="idMapa" class="map"></div>
         </b-card>
         </b-col>
     </b-row>       
@@ -50,12 +50,13 @@ export default {
               
     /* */              
     components: {
-      'painel-layer' :painelTerreno,       
+      'painel-layer' :painelTerreno      
     },   
 
     /* */
     props: {
       extent: { type: Array, default:()=> [0, 0, 1024, 968] },      
+      idMapa:  { type: String, default:'map' }  
     },    
 
     /* */
@@ -312,7 +313,7 @@ export default {
                               }), 
                               this.TileLayer
                     ],
-                    target: 'map',
+                    target: this.idMapa,
                     view: this.view,
                     controls: defaultControls().extend([
                         new RotateNorthControl()
@@ -391,7 +392,7 @@ export default {
       
       /* */
       getMinZoom() {
-        var viewport = document.getElementById('map');
+        var viewport = document.getElementById(this.idMapa);
         var width = viewport.clientWidth;
         return Math.ceil(Math.LOG2E * Math.log(width / 256));
       },

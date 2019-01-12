@@ -5,9 +5,7 @@
 <b-container>
     <b-row>
         <b-col class="text-center rounded pointer">  
-        <b-card >
-            <div id="map" class="map"></div>
-        </b-card>
+          <div :id="idMapa" class="map"></div>
         </b-col>
     </b-row>  
     <b-modal v-model="modalTerreno" ok-only size="lg" @hide="removeTerrenosSelecionados" centered title="Lote 63 - Lagoa Dos Cisnes - Macacos - mg" >
@@ -56,7 +54,8 @@ export default {
 
     /* */
     props: {
-      extent: { type: Array, default:()=> [0, 0, 1024, 968] },      
+      extent: { type: Array, default:()=> [0, 0, 586, 837] },  
+      idMapa:  { type: String, default:'map' }    
     },    
 
     /* */
@@ -299,7 +298,7 @@ export default {
 
           this.view = new View({
                             center: fromLonLat([ -44.962855, -18.797930]),
-                            zoom: 3         
+                            zoom: 14         
                     })
           this.map = new Map({
                     layers: [
@@ -313,7 +312,7 @@ export default {
                               }), */
                               this.TileLayer
                     ],
-                    target: 'map',
+                    target: this.idMapa,
                     view: this.view,
                     controls: defaultControls().extend([
                         new RotateNorthControl()
@@ -435,7 +434,7 @@ export default {
       
       /* */
       getMinZoom() {
-        var viewport = document.getElementById('map');
+        var viewport = document.getElementById(this.idMapa);
         var width = viewport.clientWidth;
         return Math.ceil(Math.LOG2E * Math.log(width / 256));
       },
@@ -486,8 +485,8 @@ export default {
 
 <style>
       #map {
-        width: 1024px;
-        height: 800px;
+        width: 586px;
+        height: 840px;
       }
       .rotate-north {
         top: .5em;
