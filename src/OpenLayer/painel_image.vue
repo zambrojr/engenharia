@@ -6,7 +6,7 @@
     <b-row>
         <b-col class="text-center rounded pointer">  
         <b-card >
-            <div id="map" class="map"></div>
+            <div :id="idMapa" class="map"></div>
         </b-card>
         </b-col>
     </b-row>       
@@ -23,7 +23,6 @@
 </template>
 
 <script>
-
 import 'ol/ol.css';
     import Map from 'ol/Map.js';
       import View from 'ol/View.js';
@@ -35,13 +34,11 @@ import 'ol/ol.css';
       import Draw from 'ol/interaction/Draw.js';
       import {Tile as TileLayer, Vector as VectorLayer} from 'ol/layer.js';
       import {OSM, Vector as VectorSource} from 'ol/source.js';
-
       import GeoJSON from 'ol/format/GeoJSON.js';
       import Feature from 'ol/Feature.js';
       import {click, pointerMove, altKeyOnly, doubleClick} from 'ol/events/condition.js';
       import Select from 'ol/interaction/Select.js';
       import {Fill, Stroke, Style, Text, RegularShape} from 'ol/style.js';
-
       import {defaults as defaultControls, Control} from 'ol/control.js';
       
       import painelTerreno from './painelTerreno.vue';
@@ -50,38 +47,29 @@ export default {
               
     /* */              
     components: {
-      'painel-layer' :painelTerreno,       
+      'painel-layer' :painelTerreno      
     },   
-
     /* */
     props: {
       extent: { type: Array, default:()=> [0, 0, 1024, 968] },      
+      idMapa:  { type: String, default:'map' }  
     },    
-
     /* */
     data() {
             return {
-
-
                 modalTerreno:false,
                 selectIteracaoTerreno: {},
-
                 /* */
-
                 flagMod: '',
-
                 map: {},
                 view:{},
                 projection: {},
                 draw: {},
                 initialZoom: null,
-
                 sourceDisponiveis: {},
                 layerDisponiveis: {},
-
                 sourceVendidos:{},
                 layerVendidos:{},
-
                 listaTerrenos: {
                   "type":"FeatureCollection",
                   "features":[
@@ -100,11 +88,8 @@ export default {
                 },                
             }
         },
-
     watch: {
-
       flagMod() {
-
         if(this.flagMod == 'iteracao'){
           console.log('flagMod:iteracao')
           this.terminaModoMarcacaoTerreno();
@@ -122,19 +107,14 @@ export default {
           this.terminaModoNavegacao();
           this.terminaMarcacaoTerreno();
         }
-
       }
-
     } ,       
-
     /* */
     methods: {
-
       modoMarcacaoTerreno() {
         this.flagMod = 'marcacao';
         console.log('modoMarcacaoTerreno');
       },
-
       /* */
       modoNavegacao()
       {                   
@@ -142,24 +122,16 @@ export default {
           console.log('flagModwww');
           console.log(this.flagMod);
       },      
-
       /*  -------------------------------------------------------------------- */
       /*  -------------------------------------------------------------------- */
-
-
       /* */
       iniciaModoMarcacaoTerreno() {
-
         var iteracoes = this.map.getInteractions();
-
         var existe = false;
         this.map.getInteractions().forEach(function (interaction) {
           if(interaction instanceof Draw) existe = true;
         });
         if(existe){ this.eventoFimMarcacaoTerreno(); this.terminaModoNavegacao(); return; }
-
-
-
           if(!(this.draw instanceof Draw)){
             
               this.draw = new Draw({
@@ -180,37 +152,28 @@ export default {
     
               });
           }
-
           //var
           this.draw.on('drawend', this.eventoFimMarcacaoTerreno);
           this.map.addInteraction(this.draw);
-
           console.log('modoMarcacaoTerreno');
       },
-
-
       /* */
       terminaMarcacaoTerreno(){
           this.map.removeInteraction(this.draw);
       },
-
-
       /* */
       terminaModoMarcacaoTerreno(){
           this.terminaMarcacaoTerreno();
           console.log('eventoFimMarcacaoTerreno');
           this.flagMod = 'iteracao';
       },
-
       /* */
       eventoFimMarcacaoTerreno(event)
       {
         this.terminaModoMarcacaoTerreno();
       },      
-
       /*  -------------------------------------------------------------------- */
       /*  -------------------------------------------------------------------- */
-
       /* */
       iniciaModoNavegacao()
       {          
@@ -230,10 +193,8 @@ export default {
             console.log('terminaModoNavegacao');
           }           
       },
-
       /*  -------------------------------------------------------------------- */
       /*  -------------------------------------------------------------------- */      
-
       /* */
       iniciaModoIteracao(){
             this.selectIteracaoTerreno = new Select({ condition: click  });
@@ -241,16 +202,13 @@ export default {
             this.map.addInteraction(this.selectIteracaoTerreno);
             console.log('iniciaModoIteracao');
       },
-
       /* */
       terminaModoIteracao(){
             this.map.removeInteraction(this.selectIteracaoTerreno);
              console.log('terminaModoIteracao');
       },
-
       /*  -------------------------------------------------------------------- */
       /*  -------------------------------------------------------------------- */     
-
       /* */ 
       iniciaMapa()
       {
@@ -259,8 +217,6 @@ export default {
           this.initTileLayer();
           this.initDisponiveisLayer();
           this.initVendidosLayer();
-
-
       /**
        * @constructor
        * @extends {module:ol/control/Control~Control}
@@ -269,50 +225,42 @@ export default {
       var RotateNorthControl = (function (Control, objVue) {
         function RotateNorthControl(opt_options) {
           var options = opt_options || {};
-
           var button = document.createElement('button'); button.innerHTML = 'N';
           var buttonD = document.createElement('button'); buttonD.innerHTML = 'D';
-
           var element = document.createElement('div'); element.className = 'rotate-north ol-unselectable ol-control'; 
           element.appendChild(button);
           element.appendChild(buttonD);
-
           Control.call(this, {
             element: element,
             target: options.target
           });
-
           button.addEventListener('click', objVue.modoNavegacao, false);
           buttonD.addEventListener('click', objVue.modoMarcacaoTerreno, false);
         }
-
         if ( Control ) RotateNorthControl.__proto__ = Control;
         RotateNorthControl.prototype = Object.create( Control && Control.prototype );
         RotateNorthControl.prototype.constructor = RotateNorthControl;
-
         return RotateNorthControl;
       }(Control, this));
-
           this.view = new View({
                             projection: this.projection,
                             center: getCenter(this.extent),
                             minZoom: this.initialZoom,
                             zoom: this.initialZoom        
                     })
-
           this.map = new Map({
                     layers: [
                               new ImageLayer({
                                 source: new Static({
                                   attributions: '© <a href="http://xkcd.com/license.html">xkcd</a>',
-                                  url: 'img/mapa.png',
+                                  url: 'images/mapa.png',
                                   projection: this.projection,
                                   imageExtent: this.extent
                                 })
                               }), 
                               this.TileLayer
                     ],
-                    target: 'map',
+                    target: this.idMapa,
                     view: this.view,
                     controls: defaultControls().extend([
                         new RotateNorthControl()
@@ -320,7 +268,6 @@ export default {
                   });
                   
       },
-
       /* */
       checkLayer(layer) {
           var res = false;
@@ -331,7 +278,6 @@ export default {
           }
           return res;
       },
-
       /* */ 
       initProjection()
       {
@@ -341,7 +287,6 @@ export default {
             extent: this.extent
         });
       },
-
       /* */
       initTileLayer()
       {
@@ -349,7 +294,6 @@ export default {
             source: new OSM()
         });      
       },
-
       /* */
       initDisponiveisLayer()
       {
@@ -362,7 +306,6 @@ export default {
           });      
           this.layerDisponiveis.set('name', 'layerDisponiveis');
       },
-
       /* */
       initVendidosLayer()
       {
@@ -370,13 +313,11 @@ export default {
               wrapX: false,
               features: (new GeoJSON()).readFeatures(this.listaTerrenosVendidos)
             });
-
           var style = new Style({
             stroke: new Stroke({  color: '#f00',  width: 1  }),
             fill: new Fill({  color: 'rgba(255,0,0,0.1)'  }),
             text: new Text({  font: '20px Calibri,sans-serif',  })
           });          
-
           this.layerVendidos =new VectorLayer({
             source: this.sourceVendidos,
             style: function(feature) {
@@ -385,17 +326,15 @@ export default {
             }
           });  
           this.layerVendidos.set('name', 'layerVendidos');
-
           return this.layerVendidos;
       },
       
       /* */
       getMinZoom() {
-        var viewport = document.getElementById('map');
+        var viewport = document.getElementById(this.idMapa);
         var width = viewport.clientWidth;
         return Math.ceil(Math.LOG2E * Math.log(width / 256));
       },
-
       /* */
       getFeaturesTerrenos(e)
       {
@@ -407,17 +346,14 @@ export default {
             //console.log(geojsonStrVendidos);
             this.openModalTerreno();
       },
-
       /* */
       removeTerrenosSelecionados(){
         this.selectIteracaoTerreno.getFeatures().clear();
       },
-
       /* */
       openModalTerreno(){
           this.modalTerreno = true;
       }
-
     },
         
     /* */        
@@ -429,14 +365,9 @@ export default {
       this.iniciaMapa();
       //this.modoMarcacaoTerreno();
       //this.modoNavegacao();
-
     }
-
      
 }
-
-
-
 </script>    
 
 <style>
@@ -453,4 +384,3 @@ export default {
       }
       
     </style>
-</style>
